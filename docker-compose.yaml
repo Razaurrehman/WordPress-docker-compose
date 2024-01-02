@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  #Database service
+  mysql_db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: qwerty@123
+      MYSQL_DATABASE: socialpie_new
+      MYSQL_USER: admin_WP
+      MYSQL_PASSWORD: 54321`
+    volumes:
+      - mysql:/var/lib/mysql
+
+  #Wordpress (image based on Apache)
+  wordpress:
+    depends_on:
+      - mysql_db
+    image: wordpress:latest
+    restart: always
+    ports:
+      - "8000:80"
+    environment:
+      WORDPRESS_DB_HOST: mysql_db:3306
+      WORDPRESS_DB_USER: admin_WP
+      WORDPRESS_DB_PASSWORD: 54321`
+      WORDPRESS_DB_NAME: socialpie_new
+    volumes:
+      ["./:/var/www/html"]
+  phpmyadmin:
+    depends_on:
+      - mysql_db
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8083:80
+    environment:
+      PMA_HOST: mysql_db
+      MYSQL_ROOT_PASSWORD: 54321`
+volumes:
+  mysql: {}
